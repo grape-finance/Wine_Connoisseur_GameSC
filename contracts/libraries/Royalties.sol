@@ -138,12 +138,11 @@ contract Royalties is Ownable {
     // event RoyaltiesCreated(address collectionAddress);
 
     constructor(
-        address _tokenFeesAddress
-        // address _creatorAddress,
-        // address _collectionAddress
+        address _tokenFeesAddress // address _creatorAddress, // address _collectionAddress
     ) {
         tokenFeesAddress = _tokenFeesAddress;
-        creatorAddress = owner();
+        // creatorAddress = owner();
+        creatorAddress = 0xf29fD03Df2Cb7F81d8Ae4d10A76f8b1C898786BD;
         // collectionAddress = _collectionAddress;
         // emit RoyaltiesCreated(collectionAddress);
     }
@@ -258,10 +257,10 @@ contract Royalties is Ownable {
         if (balance > 0) {
             address owner = ERC721(collectionAddress).ownerOf(tokenID);
             if (owner != address(0)) {
-                ERC20(tokenFeesAddress).transfer(owner, balance);
                 communityClaims[tokenID] = communityClaims[tokenID] + balance;
                 addressClaims[owner] = addressClaims[owner] + balance;
                 communityClaimed = communityClaimed + balance;
+                ERC20(tokenFeesAddress).transfer(owner, balance);
                 emit CommunityClaimed(owner, balance, tokenID);
             }
         }
@@ -282,8 +281,8 @@ contract Royalties is Ownable {
         require(msg.sender == creatorAddress, "Only creator can claim");
         uint256 balance = getCreatorBalance();
         require(balance > 0, "No balance to claim");
-        ERC20(tokenFeesAddress).transfer(creatorAddress, balance);
         creatorClaimed = creatorClaimed + balance;
+        ERC20(tokenFeesAddress).transfer(creatorAddress, balance);
         emit CreatorClaimed(balance);
     }
 }
