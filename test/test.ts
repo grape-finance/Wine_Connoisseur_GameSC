@@ -1,7 +1,12 @@
 import { expect } from 'chai'
 import { deployments, ethers, upgrades } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import { couponPublic, couponPrivate, BASE_URI } from '../scripts/address'
+import {
+  couponPublic,
+  couponPrivate,
+  BASE_URI,
+  WAVAXAddress,
+} from '../scripts/address'
 import { BigNumber } from 'ethers'
 import { keccak256, toBuffer, ecsign, bufferToHex } from 'ethereumjs-util'
 import {
@@ -10,6 +15,7 @@ import {
   Upgrade,
   VintageWine,
   Vintner,
+  Royalties,
   Winery,
   WineryProgression,
 } from '../typechain'
@@ -24,9 +30,10 @@ describe('Wine Connoisseur game', function () {
   // Contract
   let vintageWine: VintageWine
   let grape: Grape
-  let cellar: Cellar
-  let upgrade: Upgrade
   let vintner: Vintner
+  let upgrade: Upgrade
+  let royalty: Royalties
+  let cellar: Cellar
   let winery: Winery
   let wineryProgression: WineryProgression
 
@@ -54,21 +61,6 @@ describe('Wine Connoisseur game', function () {
     })
     grape = await ethers.getContractAt('Grape', receipt.address)
 
-    // Deploy Cellar Contract
-    receipt = await deployments.deploy('Cellar', {
-      from: owner.address,
-      args: [vintageWine.address],
-      log: true,
-    })
-    cellar = await ethers.getContractAt('Cellar', receipt.address)
-    // Deploy Upgrade Contract
-    receipt = await deployments.deploy('Upgrade', {
-      from: owner.address,
-      args: [vintageWine.address, grape.address, BASE_URI],
-      log: true,
-    })
-    upgrade = await ethers.getContractAt('Upgrade', receipt.address)
-
     // Deploy Vintner Contract
     receipt = await deployments.deploy('Vintner', {
       from: owner.address,
@@ -76,6 +68,29 @@ describe('Wine Connoisseur game', function () {
       log: true,
     })
     vintner = await ethers.getContractAt('Vintner', receipt.address)
+    // Deploy Upgrade Contract
+    receipt = await deployments.deploy('Upgrade', {
+      from: owner.address,
+      args: [vintageWine.address, grape.address, BASE_URI],
+      log: true,
+    })
+    upgrade = await ethers.getContractAt('Upgrade', receipt.address)
+    // Deploy Royalty Contract
+    receipt = await deployments.deploy('Royalties', {
+      from: owner.address,
+      args: [WAVAXAddress],
+      log: true,
+    })
+    royalty = await ethers.getContractAt('Royalties', receipt.address)
+
+    // Deploy Cellar Contract
+    receipt = await deployments.deploy('Cellar', {
+      from: owner.address,
+      args: [vintageWine.address],
+      log: true,
+    })
+    cellar = await ethers.getContractAt('Cellar', receipt.address)
+
     // Deploy Winery Progression Contract
     receipt = await deployments.deploy('WineryProgression', {
       from: owner.address,
@@ -129,15 +144,15 @@ describe('Wine Connoisseur game', function () {
   })
   describe('Initialize contracts', function () {
     it('Set Start time', async function () {
-      await vintner.setStartTime(Math.floor(Date.now() / 1000) + 5)
-      await vintner.setStartTimeWhitelist(Math.floor(Date.now() / 1000) + 5)
-      await upgrade.setStartTime(Math.floor(Date.now() / 1000) + 10)
-      await cellar.setStakeStartTime(Math.floor(Date.now() / 1000) + 10)
+      await vintner.setStartTime(Math.floor(Date.now() / 1000) + 20)
+      await vintner.setStartTimeWhitelist(Math.floor(Date.now() / 1000) + 20)
+      await upgrade.setStartTime(Math.floor(Date.now() / 1000) + 25)
+      await cellar.setStakeStartTime(Math.floor(Date.now() / 1000) + 25)
       await wineryProgression.setLevelStartTime(
-        Math.floor(Date.now() / 1000) + 10,
+        Math.floor(Date.now() / 1000) + 25,
       )
 
-      await winery.setStartTime(Math.floor(Date.now() / 1000) + 10)
+      await winery.setStartTime(Math.floor(Date.now() / 1000) + 25)
     })
     it('Set initial values', async function () {
       await vintageWine.setCellarAddress(cellar.address)
@@ -145,6 +160,10 @@ describe('Wine Connoisseur game', function () {
       await vintageWine.setUpgradeAddress(upgrade.address)
       await vintner.setWineryAddress(winery.address)
       await upgrade.setWineryAddress(winery.address)
+      await vintner.setRoyaltiesAddress(royalty.address)
+      await vintner.setRoyaltiesFees(BigNumber.from(10))
+      await upgrade.setRoyaltiesAddress(royalty.address)
+      await upgrade.setRoyaltiesFees(BigNumber.from(10))
       // We need to do this in real production !!!
       // await winery.initialize(
       //   vintner.address,

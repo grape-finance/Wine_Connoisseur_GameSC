@@ -3,12 +3,13 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./libraries/ERC721.sol";
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract Vintner is ERC721, Ownable, Pausable {
+import "./libraries/ERC2981.sol";
+
+contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
     using SafeERC20 for IERC20;
     using Strings for uint256;
 
@@ -36,11 +37,12 @@ contract Vintner is ERC721, Ownable, Pausable {
     // VAR
     // external contracts
     IERC20 public grapeAddress;
-    address public wineryAddress;
+    // address public wineryAddress;
     address public vintnerTypeOracleAddress;
 
     // metadata URI
     string public BASE_URI;
+    uint256 private royaltiesFees;
 
     // vintner type definitions (normal or master?)
     mapping(uint256 => uint256) public tokenTypes; // maps tokenId to its type
@@ -64,10 +66,6 @@ contract Vintner is ERC721, Ownable, Pausable {
         uint8 v;
     }
     mapping(address => uint256) public whitelistClaimed;
-
-    // royalty
-
-    uint256 public royalityFee = 5;
 
     // EVENTS
 
@@ -101,6 +99,16 @@ contract Vintner is ERC721, Ownable, Pausable {
     }
 
     // VIEWS
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC2981)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 
     // minting status
 
@@ -167,6 +175,7 @@ contract Vintner is ERC721, Ownable, Pausable {
 
     function setWineryAddress(address _wineryAddress) external onlyOwner {
         wineryAddress = _wineryAddress;
+        super._setWineryAddress(_wineryAddress);
     }
 
     function setvintnerTypeOracleAddress(address _vintnerTypeOracleAddress)
@@ -194,10 +203,6 @@ contract Vintner is ERC721, Ownable, Pausable {
 
     function setBaseURI(string calldata _BASE_URI) external onlyOwner {
         BASE_URI = _BASE_URI;
-    }
-
-    function setRoyalityFee(uint256 _royalityFee) public onlyOwner {
-        royalityFee = _royalityFee;
     }
 
     /**
@@ -398,75 +403,28 @@ contract Vintner is ERC721, Ownable, Pausable {
         _createVintners(qty, _msgSender());
     }
 
-    // Override NFT transfer functions
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public payable override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
-        );
-
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        _transfer(from, to, tokenId);
+    /// @dev sets royalties address
+    /// for royalties addon
+    /// for 2981
+    function setRoyaltiesAddress(address _royaltiesAddress) public onlyOwner {
+        super._setRoyaltiesAddress(_royaltiesAddress);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public payable override {
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        safeTransferFrom(from, to, tokenId, "");
+    /// @dev sets royalties fees
+    function setRoyaltiesFees(uint256 _royaltiesFees) public onlyOwner {
+        royaltiesFees = _royaltiesFees;
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory _data
-    ) public payable override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
-        );
-
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        _safeTransfer(from, to, tokenId, _data);
-    }
-
-    function _payRoyality(uint256 _royalityFee) internal {
-        (bool success1, ) = payable(owner()).call{ value: _royalityFee }("");
-        require(success1);
+    /// @inheritdoc	IERC2981
+    function royaltyInfo(uint256 tokenId, uint256 value)
+        external
+        view
+        override
+        returns (address receiver, uint256 royaltyAmount)
+    {
+        if (tokenId > 0)
+            return (royaltiesAddress, (value * royaltiesFees) / 100);
+        else return (royaltiesAddress, 0);
     }
 
     // Returns information for multiples vintners

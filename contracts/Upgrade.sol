@@ -3,13 +3,14 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "./libraries/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./VintageWine.sol";
+
+import "./libraries/ERC2981.sol";
 
 interface IGrape {
     function totalSupply() external view returns (uint256);
@@ -49,7 +50,7 @@ interface IGrape {
     );
 }
 
-contract Upgrade is ERC721, Ownable, Pausable {
+contract Upgrade is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
     using SafeERC20 for IERC20;
     using Strings for uint256;
 
@@ -72,9 +73,10 @@ contract Upgrade is ERC721, Ownable, Pausable {
 
     VintageWine vintageWine;
     IGrape grape;
-    address public wineryAddress;
+    // address public wineryAddress;
 
     string public BASE_URI;
+    uint256 private royaltiesFees;
 
     uint256 public startTime;
 
@@ -86,8 +88,6 @@ contract Upgrade is ERC721, Ownable, Pausable {
     uint256 public constant LP_TAX_PERCENT = 2;
 
     mapping(uint256 => uint256) private tokenLevel;
-
-    uint256 public royalityFee = 5;
 
     // Events
 
@@ -135,6 +135,16 @@ contract Upgrade is ERC721, Ownable, Pausable {
     }
 
     // Views
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC2981)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 
     function mintingStarted() public view returns (bool) {
         return startTime != 0 && block.timestamp > startTime;
@@ -245,10 +255,6 @@ contract Upgrade is ERC721, Ownable, Pausable {
         BASE_URI = _BASE_URI;
     }
 
-    function setRoyalityFee(uint256 _royalityFee) public onlyOwner {
-        royalityFee = _royalityFee;
-    }
-
     function forwardERC20s(
         IERC20 _token,
         uint256 _amount,
@@ -309,75 +315,28 @@ contract Upgrade is ERC721, Ownable, Pausable {
         );
     }
 
-    // Override NFT transfer functions
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public payable override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
-        );
-
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        _transfer(from, to, tokenId);
+    /// @dev sets royalties address
+    /// for royalties addon
+    /// for 2981
+    function setRoyaltiesAddress(address _royaltiesAddress) public onlyOwner {
+        super._setRoyaltiesAddress(_royaltiesAddress);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public payable override {
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        safeTransferFrom(from, to, tokenId, "");
+    /// @dev sets royalties fees
+    function setRoyaltiesFees(uint256 _royaltiesFees) public onlyOwner {
+        royaltiesFees = _royaltiesFees;
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory _data
-    ) public payable override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
-        );
-
-        if (msg.value > 0) {
-            uint256 royality = (msg.value * royalityFee) / 100;
-            _payRoyality(royality);
-
-            (bool success2, ) = payable(from).call{
-                value: msg.value - royality
-            }("");
-            require(success2);
-        }
-
-        _safeTransfer(from, to, tokenId, _data);
-    }
-
-    function _payRoyality(uint256 _royalityFee) internal {
-        (bool success1, ) = payable(owner()).call{ value: _royalityFee }("");
-        require(success1);
+    /// @inheritdoc	IERC2981
+    function royaltyInfo(uint256 tokenId, uint256 value)
+        external
+        view
+        override
+        returns (address receiver, uint256 royaltyAmount)
+    {
+        if (tokenId > 0)
+            return (royaltiesAddress, (value * royaltiesFees) / 100);
+        else return (royaltiesAddress, 0);
     }
 
     // // Returns information for multiples upgrades

@@ -8,14 +8,16 @@ export const wineryProgressionAddress =
   '0x969A6229B0Aae4336E7593ED7B796B656E65e0FC'
 export const wineryProxyAddress = '0x9000e05e26d9333cf0d0883b7b52cb4e5a4c37ac' // It's main address
 export const wineryAddress = '0xb3aa28E9e1b2573f0301d4f23D43dA21d374aA1E' // It's the proxy address
-export const USDCVintageWineLPAddress = '0x46372ce0868EBB34CdB334daF8C0d699a24d39a4'
-export const vintageWineFountainAddress = '0x004FeC4da28E9137c9779C948A047C0c4fff92Ca'
-
+export const USDCVintageWineLPAddress =
+  '0x46372ce0868EBB34CdB334daF8C0d699a24d39a4'
+export const vintageWineFountainAddress =
+  '0x004FeC4da28E9137c9779C948A047C0c4fff92Ca'
 
 // Vinter Oracle Address - you can change it to your admin wallet address
 export const couponPublic = '0xC8ce9e95470F052C4506B8778FEF2880Bffd427D'
 export const couponPrivate =
   '429f5d8f41beb81e2d634b1667d81c8be95b946dcbe119252316e8182d6d1c49'
+export const WAVAXAddress = '0xd02b1f1c1600193b238f8cF8C217CD6597Bd5AAA' // Real "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
 export const oracleAddress = '0xb5D774a16CF9903353DaeAE188a1954312080D4a'
 export const BASE_URI = 'https://api.pizza.game/chefs'
 export const BASE_URI_UPGRADE = 'https://api.pizza.game/static'
