@@ -1,7 +1,6 @@
 import { ethers, upgrades } from 'hardhat'
 import {
   grapeTokenAddress,
-  couponPublic,
   oracleAddress,
   BASE_URI,
   BASE_URI_UPGRADE,
@@ -32,7 +31,7 @@ async function main(): Promise<{}> {
   const Vintner = await ethers.getContractFactory('Vintner')
   const Vintner_Deployed = await Vintner.deploy(
     grapeTokenAddress,
-    couponPublic,
+    process.env.couponPublic!,
     oracleAddress,
     BASE_URI,
   )

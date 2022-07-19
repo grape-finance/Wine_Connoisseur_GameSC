@@ -36,14 +36,14 @@ const config: HardhatUserConfig = {
       chainId: 97,
       gasPrice: 20000000000,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     bscmainnet: {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
       gasPrice: 20000000000,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     avaxfuji: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
@@ -51,28 +51,28 @@ const config: HardhatUserConfig = {
       gas: 8000000,
       gasPrice: 26000000000,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     avaxmainnet: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
       gas: 8000000,
       chainId: 43114,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     ropsten: {
       url: 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       gas: 8000000,
       chainId: 3,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       gas: 8000000,
       chainId: 4,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
   },
   gasReporter: {

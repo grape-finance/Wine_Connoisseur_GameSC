@@ -32,12 +32,12 @@ async function main(): Promise<string> {
 
 const makeRandomArray = (): IParams[] => {
   let array: IParams[] = []
-
-  for (let i = 71; i < 70; i++) {
+  // 51 ~ 10000
+  for (let i = 51; i < 52; i++) {
     let randomNumber = Math.floor(Math.random() * 100) // 1 ~ 100
     randomNumber = randomNumber < 95 ? 1 : 2
     array.push({
-      tokenId: BigNumber.from(i + 1),
+      tokenId: BigNumber.from(i),
       vintnerType: BigNumber.from(randomNumber),
     })
   }

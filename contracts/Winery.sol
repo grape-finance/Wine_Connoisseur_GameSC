@@ -144,13 +144,13 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         cellarAddress = _cellarAddress;
     }
 
-    function setVintner(Vintner _vintner) external onlyOwner {
-        vintner = _vintner;
-    }
+    // function setVintner(Vintner _vintner) external onlyOwner {
+    //     vintner = _vintner;
+    // }
 
-    function setUpgrade(Upgrade _upgrade) external onlyOwner {
-        upgrade = _upgrade;
-    }
+    // function setUpgrade(Upgrade _upgrade) external onlyOwner {
+    //     upgrade = _upgrade;
+    // }
 
     function setYieldPPS(uint256 _yieldPPS) external onlyOwner {
         yieldPPS = _yieldPPS;

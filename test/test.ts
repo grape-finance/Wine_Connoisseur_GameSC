@@ -1,12 +1,7 @@
 import { expect } from 'chai'
 import { deployments, ethers, upgrades } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import {
-  couponPublic,
-  couponPrivate,
-  BASE_URI,
-  WAVAXAddress,
-} from '../scripts/address'
+import { BASE_URI, WAVAXAddress } from '../scripts/address'
 import { BigNumber } from 'ethers'
 import { keccak256, toBuffer, ecsign, bufferToHex } from 'ethereumjs-util'
 import {
@@ -64,7 +59,12 @@ describe('Wine Connoisseur game', function () {
     // Deploy Vintner Contract
     receipt = await deployments.deploy('Vintner', {
       from: owner.address,
-      args: [grape.address, couponPublic, oracle.address, BASE_URI],
+      args: [
+        grape.address,
+        process.env.couponPublic!,
+        oracle.address,
+        BASE_URI,
+      ],
       log: true,
     })
     vintner = await ethers.getContractAt('Vintner', receipt.address)
@@ -222,7 +222,7 @@ describe('Wine Connoisseur game', function () {
        * @notice The address used in your Smart Contract to verify the coupon must be the public address associated with this key
        */
 
-      const signerPvtKey = Buffer.from(couponPrivate, 'hex')
+      const signerPvtKey = Buffer.from(process.env.couponMemonic!, 'hex')
 
       console.log('signerPvtKey', signerPvtKey)
 

@@ -534,52 +534,52 @@ contract WineryProgression is Ownable {
     }
 
     // WINERY MIGRATION
-    IWinery public oldWinery;
-    mapping(address => bool) public updateOnce; // owner => has updated
+    // IWinery public oldWinery;
+    // mapping(address => bool) public updateOnce; // owner => has updated
 
-    function checkIfNeedUpdate(address _owner) public view returns (bool) {
-        if (updateOnce[_owner]) {
-            return false; // does not need update if already updated
-        }
+    // function checkIfNeedUpdate(address _owner) public view returns (bool) {
+    //     if (updateOnce[_owner]) {
+    //         return false; // does not need update if already updated
+    //     }
 
-        uint256 oldGrapeDeposited = oldWinery.grapeDeposited(_owner);
+    //     uint256 oldGrapeDeposited = oldWinery.grapeDeposited(_owner);
 
-        if (oldGrapeDeposited > 0) {
-            return true; // if the player deposited any grape it means he interacted with the Winery improvements
-        }
+    //     if (oldGrapeDeposited > 0) {
+    //         return true; // if the player deposited any grape it means he interacted with the Winery improvements
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    function setOldWinery(address _oldWinery) external onlyOwner {
-        oldWinery = IWinery(_oldWinery);
-    }
+    // function setOldWinery(address _oldWinery) external onlyOwner {
+    //     oldWinery = IWinery(_oldWinery);
+    // }
 
-    function updateDataFromOldWinery(address _owner) external {
-        require(checkIfNeedUpdate(_owner), "Owner dont need to update");
-        updateOnce[_owner] = true;
+    // function updateDataFromOldWinery(address _owner) external {
+    //     require(checkIfNeedUpdate(_owner), "Owner dont need to update");
+    //     updateOnce[_owner] = true;
 
-        grapeDeposited[_owner] = oldWinery.grapeDeposited(_owner);
+    //     grapeDeposited[_owner] = oldWinery.grapeDeposited(_owner);
 
-        skillPoints[_owner] = oldWinery.skillPoints(_owner);
+    //     skillPoints[_owner] = oldWinery.skillPoints(_owner);
 
-        uint256 burnSkillId = oldWinery.skillsLearned(_owner, 0);
-        uint256 fatigueSkillId = oldWinery.skillsLearned(_owner, 1);
-        uint256 cellarSkillId = oldWinery.skillsLearned(_owner, 2);
-        uint256 mastervintnerSkillId = oldWinery.skillsLearned(_owner, 3);
-        uint256 upgradeSkillId = oldWinery.skillsLearned(_owner, 4);
-        uint256 vintnerSkillId = oldWinery.skillsLearned(_owner, 5);
+    //     uint256 burnSkillId = oldWinery.skillsLearned(_owner, 0);
+    //     uint256 fatigueSkillId = oldWinery.skillsLearned(_owner, 1);
+    //     uint256 cellarSkillId = oldWinery.skillsLearned(_owner, 2);
+    //     uint256 mastervintnerSkillId = oldWinery.skillsLearned(_owner, 3);
+    //     uint256 upgradeSkillId = oldWinery.skillsLearned(_owner, 4);
+    //     uint256 vintnerSkillId = oldWinery.skillsLearned(_owner, 5);
 
-        skillsLearned[_owner] = [
-            burnSkillId,
-            fatigueSkillId,
-            cellarSkillId,
-            mastervintnerSkillId,
-            upgradeSkillId,
-            vintnerSkillId,
-            0
-        ];
+    //     skillsLearned[_owner] = [
+    //         burnSkillId,
+    //         fatigueSkillId,
+    //         cellarSkillId,
+    //         mastervintnerSkillId,
+    //         upgradeSkillId,
+    //         vintnerSkillId,
+    //         0
+    //     ];
 
-        fixSkillPoints(_owner); // Fix skill points because of rebalance
-    }
+    //     fixSkillPoints(_owner); // Fix skill points because of rebalance
+    // }
 }

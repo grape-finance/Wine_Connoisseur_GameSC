@@ -21,7 +21,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
     // CONSTANTS
 
     uint256 public constant VINTNER_PRICE_AVAX = 3 ether;
-    uint256 public constant VINTNER_PRICE_GRAPE = 100 * 1e18;
+    uint256 public constant VINTNER_PRICE_GRAPE = 50 * 1e18;
 
     uint256 public WHITELIST_VINTNERS = 2700;
     uint256 public constant NUM_VINTNERS = 10_000;
@@ -389,7 +389,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         );
 
         // calculate the transaction cost
-        uint256 transactionCost = VINTNER_PRICE_AVAX * qty;
+        uint256 transactionCost = VINTNER_PRICE_GRAPE * qty;
         require(
             grapeAddress.balanceOf(_msgSender()) >= transactionCost,
             "not enough Grape"
