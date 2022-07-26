@@ -65,8 +65,8 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     mapping(address => uint256) public fatiguePerMinute; // address => fatigue per minute in the winery
     mapping(address => uint256) public wineryFatigue; // address => fatigue
-    mapping(address => uint256) public wineryVintageWine; // address => vintageWine
-    mapping(address => uint256) public totalPPM; // address => total PPM
+    mapping(address => uint256) public wineryVintageWine; // address => vintage
+    mapping(address => uint256) public totalPPM; // address => total VPM
     mapping(address => uint256) public startTimeStamp; // address => startTimeStamp
 
     mapping(address => uint256[2]) public numberOfStaked; // address => [number of vintners, number of master vintners]
@@ -87,11 +87,11 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     // Var
 
-    uint256 public yieldPPS; // vintageWine cooked per second per unit of yield
+    uint256 public yieldPPS; // vintage per second per unit of yield
 
     uint256 public startTime;
 
-    uint256 public grapeResetCost; // 0.1 Grape is the cost per PPM
+    uint256 public grapeResetCost; // 1 Grape is the cost per VPM
 
     uint256 public unstakePenalty; // Everytime someone unstake they need to pay this tax from the unclaimed amount
 
@@ -122,10 +122,10 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         cellarAddress = _cellarAddress;
         wineryProgression = IWineryProgression(_wineryProgression);
 
-        yieldPPS = 16666666666666667; // vintageWine cooked per second per unit of yield
+        yieldPPS = 4166666666666667; // vintage per second per unit of yield
         startTime;
-        grapeResetCost = 1e17; // 0.1 Grape is the cost per PPM
-        unstakePenalty = 2000 * 1e18; // Everytime someone unstake they need to pay this tax from the unclaimed amount
+        grapeResetCost = 1e18; // 1 Grape is the cost per VPM
+        unstakePenalty = 1000 * 1e18; // Everytime someone unstake they need to pay this tax from the unclaimed amount
         fatigueTuner = 100;
 
         ///@dev as there is no constructor, we need to initialise the OwnableUpgradeable explicitly
@@ -394,7 +394,7 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 
     /**
-     * Calculates the total PPM staked for a winery.
+     * Calculates the total VPM staked for a winery.
      * This will also be used in the fatiguePerMinute calculation
      */
     function getTotalPPM(address _owner) public view returns (uint256) {
@@ -483,7 +483,7 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256 penaltyCost = _taxableAmount * unstakePenalty;
         require(
             totalClaimed >= penaltyCost,
-            "Not enough VintageWine to pay the unstake penalty."
+            "Not enough Vintage to pay the unstake penalty."
         );
 
         wineryVintageWine[_owner] = totalClaimed - penaltyCost;

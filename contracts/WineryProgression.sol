@@ -100,19 +100,19 @@ contract WineryProgression is Ownable {
     uint256 public maxGrapeAmount = grapeLevels[grapeLevels.length - 1];
     uint256 public baseCostRespect = 25 * 1e18;
 
-    uint256[4] public burnSkillValue = [0, 3, 6, 8];
+    uint256[4] public burnSkillValue = [0, 3, 6, 12];
     uint256[6] public fatigueSkillValue = [100, 92, 85, 80, 70, 50];
-    uint256[3] public cellarSkillValue = [0, 4, 9];
-    uint256[3] public masterVintnerSkillValue = [100, 103, 110];
-    uint256[6] public upgradesSkillValue = [1, 4, 6, 8, 11, 100];
-    uint256[6] public vintnersSkillValue = [10, 15, 20, 30, 50, 20000];
+    uint256[3] public cellarSkillValue = [0, 4, 12];
+    uint256[3] public masterVintnerSkillValue = [100, 103, 120];
+    uint256[6] public upgradesSkillValue = [1, 2, 3, 4, 6, 100];
+    uint256[6] public vintnersSkillValue = [5, 10, 15, 30, 50, 20000];
     uint256[6] public vintageWineStorageSkillValue = [
-        6000 * 1e18,
-        15000 * 1e18,
-        50000 * 1e18,
-        100000 * 1e18,
-        300000 * 1e18,
-        500000 * 1e18
+        1000 * 1e18,
+        1500 * 1e18,
+        3000 * 1e18,
+        10000 * 1e18,
+        30000 * 1e18,
+        200000 * 1e18
     ];
     // uint256[4] public mafiaModSkillValue = [0,3,6,10];
 

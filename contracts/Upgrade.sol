@@ -101,8 +101,8 @@ contract Upgrade is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         string memory _BASE_URI
     )
         ERC721(
-            "VintageWine Game Vintner Tools",
-            "VINTAGEWINE-GAME-VINTNER-TOOL"
+            "Vintner Tools",
+            "VINTNER-TOOLS"
         )
     {
         vintageWine = _vintageWine;
@@ -113,22 +113,22 @@ contract Upgrade is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         levels[0] = Level({
             supply: 0,
             maxSupply: 2500,
-            priceVintageWine: 3000 * 1e18,
-            priceGrape: 50 * 1e18,
+            priceVintageWine: 300 * 1e18,
+            priceGrape: 20 * 1e18,
             yield: 1
         });
         levels[1] = Level({
             supply: 0,
             maxSupply: 2200,
-            priceVintageWine: 10000 * 1e18,
-            priceGrape: 80 * 1e18,
+            priceVintageWine: 600 * 1e18,
+            priceGrape: 50 * 1e18,
             yield: 3
         });
         levels[2] = Level({
             supply: 0,
             maxSupply: 2000,
-            priceVintageWine: 20000 * 1e18,
-            priceGrape: 110 * 1e18,
+            priceVintageWine: 1000 * 1e18,
+            priceGrape: 80 * 1e18,
             yield: 5
         });
         currentLevelIndex = 2;
@@ -293,7 +293,7 @@ contract Upgrade is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         uint256 transactionCostGrape = levels[_level].priceGrape * _qty;
         require(
             vintageWine.balanceOf(_msgSender()) >= transactionCostVintageWine,
-            "not have enough VINTAGEWINE"
+            "not have enough VINTAGE"
         );
         require(
             grape.balanceOf(_msgSender()) >= transactionCostGrape,

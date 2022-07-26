@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "./VintageWine.sol";
 
 contract Cellar is
-    ERC20("Staked VintageWine", "SVINTAGEWINE"),
+    ERC20("Staked Vintage", "SVINTAGE"),
     Ownable,
     Pausable
 {
@@ -116,7 +116,7 @@ contract Cellar is
     function claimDelayedUnstake(uint256 _amount) external whenNotPaused {
         require(
             block.timestamp >= unlockTimestamps[_msgSender()],
-            "VINTAGEWINE not yet unlocked"
+            "VINTAGE not yet unlocked"
         );
         require(
             _amount <= unlockAmounts[_msgSender()],

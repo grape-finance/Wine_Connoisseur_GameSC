@@ -20,7 +20,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
 
     // CONSTANTS
 
-    uint256 public constant VINTNER_PRICE_AVAX = 3 ether;
+    uint256 public constant VINTNER_PRICE_AVAX = 2.5 ether;
     uint256 public constant VINTNER_PRICE_GRAPE = 50 * 1e18;
 
     uint256 public WHITELIST_VINTNERS = 2700;
@@ -82,7 +82,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         address _couponSigner,
         address _vintnerTypeOracleAddress,
         string memory _BASE_URI
-    ) ERC721("VintageWine Game Vintners", "VINTAGEWINE-GAME-VINTNER") {
+    ) ERC721("The Vintners", "The VINTNERS") {
         couponSigner = _couponSigner;
         require(_vintnerTypeOracleAddress != address(0));
 

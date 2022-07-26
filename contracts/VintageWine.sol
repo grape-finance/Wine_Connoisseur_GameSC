@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract VintageWine is ERC20("VintageWine", "VINTAGEWINE"), Ownable {
+contract VintageWine is ERC20("Vintage", "VINTAGE"), Ownable {
     // uint256 public constant ONE_VINTAGEWINE = 1e18;
     // uint256 public constant NUM_PROMOTIONAL_VINTAGEWINE = 500_000;
     // uint256 public constant NUM_VINTAGEWINE_USDC_LP = 50_000_000;
