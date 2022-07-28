@@ -39,21 +39,15 @@ interface IWineryProgression {
         view
         returns (uint256);
 
-    // function getMafiaModifier(address owner) external view returns (uint256);
     function getVintageWineStorage(address owner)
         external
         view
         returns (uint256);
 }
 
-// interface IMafia {
-//     function mafiaIsActive() external view returns (bool);
-//     function mafiaCurrentPenalty() external view returns (uint256);
-// }
-
 contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     // Constants
-    address public constant DEAD_ADDRESS =
+    address public constant DEAD_ADDR =
         0x000000000000000000000000000000000000dEaD;
     uint256 public constant CLAIM_VINTAGEWINE_CONTRIBUTION_PERCENTAGE = 10;
     uint256 public constant CLAIM_VINTAGEWINE_BURN_PERCENTAGE = 10;
@@ -103,9 +97,6 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     IGrape public grape;
     address public cellarAddress;
     IWineryProgression public wineryProgression;
-
-    // IMafia public mafia;
-    // address public mafiaAddress;
 
     function initialize(
         Vintner _vintner,
@@ -178,12 +169,6 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     {
         wineryProgression = IWineryProgression(_wineryProgression);
     }
-
-    // function setMafia(address _mafia) external onlyOwner {
-    //     mafiaAddress = _mafia;
-    //     mafia = IMafia(_mafia);
-    // }
-    // Calculations
 
     /**
      * Updates the Fatigue per Minute
@@ -432,18 +417,6 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256 taxAmountBurn = (totalClaimed *
             (CLAIM_VINTAGEWINE_BURN_PERCENTAGE - burnSkillModifier)) / 100;
 
-        // uint256 taxAmountMafia = 0;
-        // if(mafiaAddress != address(0) && mafia.mafiaIsActive()){
-        //     uint256 mafiaSkillModifier = wineryProgression.getMafiaModifier(_owner);
-        //     uint256 penalty = mafia.mafiaCurrentPenalty();
-        //     if(penalty < mafiaSkillModifier){
-        //         taxAmountMafia = 0;
-        //     } else {
-        //         taxAmountMafia = totalClaimed * (penalty - mafiaSkillModifier) / 100;
-        //     }
-        // }
-
-        // totalClaimed = totalClaimed - taxAmountCellar - taxAmountBurn - taxAmountMafia;
         totalClaimed = totalClaimed - taxAmountCellar - taxAmountBurn;
 
         vintageWine.mint(_owner, totalClaimed);
@@ -471,7 +444,7 @@ contract Winery is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256 costToReset = ppm * grapeResetCost;
         require(grape.balanceOf(_owner) >= costToReset, "not enough GRAPE");
 
-        grape.transferFrom(address(_owner), DEAD_ADDRESS, costToReset);
+        grape.transferFrom(address(_owner), DEAD_ADDR, costToReset);
 
         wineryVintageWine[_owner] = getVintageWineAccrued(_owner);
         startTimeStamp[_owner] = block.timestamp;

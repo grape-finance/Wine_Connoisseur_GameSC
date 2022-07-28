@@ -361,7 +361,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         require(qty > 0 && qty <= 20, "Exceeds number of mints allowed");
         require(
             (vintnerPublicMinted + qty) <=
-                (NUM_VINTNERS - vintnersMintedWhitelist - PROMOTIONAL_VINTNERS),
+                (NUM_VINTNERS - WHITELIST_VINTNERS - PROMOTIONAL_VINTNERS),
             "Exceeds number of total mints allowed"
         );
 
@@ -384,7 +384,7 @@ contract Vintner is Ownable, Pausable, RoyaltiesAddon, ERC2981 {
         require(qty > 0 && qty <= 20, "Exceeds number of mints allowed");
         require(
             (vintnerPublicMinted + qty) <=
-                (NUM_VINTNERS - vintnersMintedWhitelist - PROMOTIONAL_VINTNERS),
+                (NUM_VINTNERS - WHITELIST_VINTNERS - PROMOTIONAL_VINTNERS),
             "Exceeds number of total mints allowed"
         );
 
