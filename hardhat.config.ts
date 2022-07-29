@@ -35,44 +35,40 @@ const config: HardhatUserConfig = {
       url: 'https://speedy-nodes-nyc.moralis.io/89b4f5c6d2fc13792dcaf416/bsc/testnet',
       chainId: 97,
       gasPrice: 20000000000,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     bscmainnet: {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
       gasPrice: 20000000000,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     avaxfuji: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
       chainId: 43113,
       gas: 8000000,
       gasPrice: 26000000000,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     avaxmainnet: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
       gas: 8000000,
+      gasPrice: 26000000000,
       chainId: 43114,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     ropsten: {
       url: 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       gas: 8000000,
       chainId: 3,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       gas: 8000000,
       chainId: 4,
-      accounts:
-        process.env.Memonic !== undefined ? [process.env.Memonic] : [],
+      accounts: process.env.Memonic !== undefined ? [process.env.Memonic] : [],
     },
   },
   gasReporter: {
@@ -207,7 +203,6 @@ const config: HardhatUserConfig = {
 }
 
 export default config
-
 
 // mainnet: "YOUR_ETHERSCAN_API_KEY",
 // ropsten: "YOUR_ETHERSCAN_API_KEY",

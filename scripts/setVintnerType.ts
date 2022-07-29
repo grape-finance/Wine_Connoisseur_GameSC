@@ -1,10 +1,11 @@
 import { ethers } from 'hardhat'
 import { vintnerAddress } from './address'
 import { BigNumber } from 'ethers'
+import fs from 'fs'
 
 interface IParams {
-  tokenId: BigNumber
-  vintnerType: BigNumber
+  tokenId: number
+  vintnerType: number
 }
 
 async function main(): Promise<string> {
@@ -18,31 +19,28 @@ async function main(): Promise<string> {
     vintnerAddress,
     deployer,
   )
-  const array: IParams[] = makeRandomArray()
-  for (const item of array) {
-    try {
-      console.log('item', item)
-      await vintnerContract.setVintnerType(item.tokenId, item.vintnerType)
-    } catch (error) {
-      console.log(`Error getting the data $ {error}`)
+  const vintnerTypeList: IParams[] = require('./vintnertype.json')
+  // console.log('vintnerTypeList', vintnerTypeList)
+  for (const element of vintnerTypeList) {
+    // vintnerTypeList.forEach(async (element: IParams) => {
+    if (element.tokenId >= 306 && element.tokenId <= 4000) {
+      console.log('element', element)
+      await vintnerContract.setVintnerType(
+        BigNumber.from(element.tokenId),
+        BigNumber.from(element.vintnerType),
+      )
+      await waitSeconds(2)
     }
   }
+
   return ''
 }
 
-const makeRandomArray = (): IParams[] => {
-  let array: IParams[] = []
-  // 51 ~ 10000
-  for (let i = 51; i < 52; i++) {
-    let randomNumber = Math.floor(Math.random() * 100) // 1 ~ 100
-    randomNumber = randomNumber < 95 ? 1 : 2
-    array.push({
-      tokenId: BigNumber.from(i),
-      vintnerType: BigNumber.from(randomNumber),
-    })
-  }
-  return array
-}
+const waitSeconds = (sec: number) =>
+  new Promise((resolve) => setTimeout(resolve, sec * 1000))
+
+// Command
+// npx hardhat run --network avaxmainnet scripts/setVintnerType.ts
 
 main()
   .then((r: string) => {
