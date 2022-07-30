@@ -25,19 +25,16 @@ async function main(): Promise<string> {
     // vintnerTypeList.forEach(async (element: IParams) => {
     if (element.tokenId >= 306 && element.tokenId <= 4000) {
       console.log('element', element)
-      await vintnerContract.setVintnerType(
+      const tx = await vintnerContract.setVintnerType(
         BigNumber.from(element.tokenId),
         BigNumber.from(element.vintnerType),
       )
-      await waitSeconds(2)
+      await tx.wait()
     }
   }
 
   return ''
 }
-
-const waitSeconds = (sec: number) =>
-  new Promise((resolve) => setTimeout(resolve, sec * 1000))
 
 // Command
 // npx hardhat run --network avaxmainnet scripts/setVintnerType.ts
